@@ -39,7 +39,7 @@ public class HotelGuestListDetailsFragment extends Fragment {
         String price = getArguments().getString("price");
 
         hotelRecapTextView.setText("You have selected " + hotelName
-                + ".\n The cost per night will be $" + price
+                + ".\nThe cost per night will be $" + price
                 + ".\nYou can checkin on " + checkInDate
                 + " and checkout on " + checkOutDate+".");
 
