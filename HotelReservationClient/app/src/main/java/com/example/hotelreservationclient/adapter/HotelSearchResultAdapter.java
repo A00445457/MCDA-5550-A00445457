@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hotelreservationclient.R;
+import com.example.hotelreservationclient.clicklistener.HotelItemClickListener;
 import com.example.hotelreservationclient.databinding.HotelListLayoutBinding;
 import com.example.hotelreservationclient.model.HotelModel;
 
@@ -22,6 +23,8 @@ public class HotelSearchResultAdapter extends RecyclerView.Adapter<HotelSearchRe
 
     // hotel search result that from viewmodel
     private List<HotelModel> hotelSearchResults = new ArrayList<>();
+
+    private HotelItemClickListener clickListener;
 
     @NonNull
     @NotNull
@@ -59,14 +62,27 @@ public class HotelSearchResultAdapter extends RecyclerView.Adapter<HotelSearchRe
         notifyDataSetChanged();
     }
 
+    public void setClickListener(HotelItemClickListener hotelItemClickListener) {
+        this.clickListener = hotelItemClickListener;
+    }
 
-    class HotelSearchResultHolder extends RecyclerView.ViewHolder {
+
+    class HotelSearchResultHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private HotelListLayoutBinding hotelListLayoutBinding;
 
+        // use dataBinding/viewBinding instead of findById
         public HotelSearchResultHolder(@NonNull HotelListLayoutBinding hotelListLayoutBinding) {
             super(hotelListLayoutBinding.getRoot());
             this.hotelListLayoutBinding = hotelListLayoutBinding;
 
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (clickListener != null) {
+                clickListener.onClick(itemView, getAbsoluteAdapterPosition());
+            }
         }
     }
 }
