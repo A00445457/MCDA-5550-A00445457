@@ -1,4 +1,4 @@
-package com.example.hotelreservationclient;
+package com.example.hotelreservationclient.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,9 +14,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.hotelreservationclient.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class HotelSearchFragment extends Fragment {
 
@@ -94,7 +95,7 @@ public class HotelSearchFragment extends Fragment {
                 bundle.putString("check out date", checkOutDate);
                 bundle.putString("number of guests", numberOfGuests);
 
-                HotelsListFragment hotelListFragment = new HotelsListFragment();
+                HotelListFragment hotelListFragment = new HotelListFragment();
                 hotelListFragment.setArguments(bundle);
 
                 FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
