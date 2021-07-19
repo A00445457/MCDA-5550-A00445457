@@ -23,12 +23,6 @@ android {
         }
     }
 
-    // Enable dataBinding
-    // Enable viewBinding
-//    buildFeatures {
-//        dataBinding true
-//        viewBinding true
-//    }
     dataBinding {
         enabled = true
     }
