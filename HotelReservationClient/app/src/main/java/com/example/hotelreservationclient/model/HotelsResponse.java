@@ -19,7 +19,4 @@ public class HotelsResponse {
         return hotels_list;
     }
 
-    public void setHotels_list(List<HotelModel> hotels_list) {
-        this.hotels_list = hotels_list;
-    }
 }
