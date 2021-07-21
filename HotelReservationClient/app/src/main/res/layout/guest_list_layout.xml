@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="guest"
+            type="com.example.hotelreservationclient.model.GuestModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/guest_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{guest.guestNumber}"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/gender_radio_group"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/first_name_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{guest.getFirstNameTitle}"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/gender_radio_group"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guest_number" />
+
+            <EditText
+                android:id="@+id/first_name_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".70"
+                android:autofillHints="Please input your first name."
+                android:ems="10"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/gender_radio_group"
+                app:layout_constraintStart_toStartOf="@id/first_name_textview"
+                app:layout_constraintTop_toBottomOf="@id/first_name_textview"
+                android:text="@{guest.firstName}"
+                android:hint="First Name"
+                tools:text="Wenshuo">
+
+                <requestFocus />
+            </EditText>
+
+            <TextView
+                android:id="@+id/last_name_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Name:"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/gender_radio_group"
+                app:layout_constraintStart_toStartOf="@id/first_name_edittext"
+                app:layout_constraintTop_toBottomOf="@id/first_name_edittext" />
+
+
+            <EditText
+                android:id="@+id/last_name_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".70"
+                android:ems="10"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@+id/gender_radio_group"
+                app:layout_constraintStart_toStartOf="@id/last_name_textview"
+                app:layout_constraintTop_toBottomOf="@id/last_name_textview"
+                android:text="@{guest.lastName}"
+                android:hint="Last Name"
+                tools:text="Li">
+
+                <requestFocus />
+            </EditText>
+
+
+            <RadioGroup
+                android:id="@+id/gender_radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="50dp"
+                tools:layout_editor_absoluteY="142dp">
+
+                <RadioButton
+                    android:id="@+id/male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="male" />
+
+                <RadioButton
+                    android:id="@+id/female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="female" />
+
+                <RadioButton
+                    android:id="@+id/other_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="other" />
+
+            </RadioGroup>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
