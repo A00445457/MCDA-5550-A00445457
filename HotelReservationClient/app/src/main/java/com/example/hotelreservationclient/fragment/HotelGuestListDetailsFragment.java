@@ -1,38 +1,55 @@
 package com.example.hotelreservationclient.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hotelreservationclient.R;
 import com.example.hotelreservationclient.adapter.GuestListConfirmAdapter;
+import com.example.hotelreservationclient.model.ConfirmResponse;
+import com.example.hotelreservationclient.model.GuestModel;
+import com.example.hotelreservationclient.model.GuestsRequest;
+import com.example.hotelreservationclient.model.HotelsResponse;
+import com.example.hotelreservationclient.viewmodel.GuestViewModel;
+import com.example.hotelreservationclient.viewmodel.HotelViewModel;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HotelGuestListDetailsFragment extends Fragment {
 
-    View view;
-    GuestListConfirmAdapter guestListConfirmAdapter;
-
+    private View view;
+    private Button confirmButton;
+    private GuestViewModel guestViewModel;
+    private GuestListConfirmAdapter guestListConfirmAdapter;
 
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String numberOfGuests = getArguments().getString("number of guests");
-        numberOfGuests = numberOfGuests.isEmpty()?"1":numberOfGuests;
+        numberOfGuests = numberOfGuests.isEmpty() ? "1" : numberOfGuests;
         int number = Integer.parseInt(numberOfGuests);
         guestListConfirmAdapter = new GuestListConfirmAdapter(number);
+        guestViewModel= ViewModelProviders.of(this).get(GuestViewModel.class);
+        guestViewModel.init();
 
     }
 
@@ -48,7 +65,6 @@ public class HotelGuestListDetailsFragment extends Fragment {
         recyclerView.setAdapter(guestListConfirmAdapter);
         return view;
     }
-
 
 
     @Override
@@ -69,15 +85,59 @@ public class HotelGuestListDetailsFragment extends Fragment {
                 + ".\nYou can checkin on " + checkInDate
                 + " and checkout on " + checkOutDate + ".");
 
-        /*
-        split line************************************************************************************
-         */
-//        rvPrueba = view.findViewById(R.id.guests_list_recyclerView);
-//        btnCalcular = view.findViewById(R.id.etCantidad);
-//        rvPrueba.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        adapter = new PruebaAdapter(lista);
-//        rvPrueba.setAdapter(adapter);
+        confirmButton = view.findViewById(R.id.confirm_reservation_button);
+        RecyclerView recyclerView = view.findViewById(R.id.guests_list_recyclerView);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                GuestListLayoutBinding guestListLayoutBinding = DataBindingUtil.findBinding(v);
+//                guestListLayoutBinding.getGuest();
+                GuestsRequest guestsRequest = new GuestsRequest();
+                List<GuestModel> guestModels = new ArrayList<>();
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+
+                    View view = recyclerView.getChildAt(i);
+                    EditText firstNameEditText = (EditText) view.findViewById(R.id.first_name_edittext);
+                    String firstName = firstNameEditText.getText().toString();
+                    EditText lastNameEditText = (EditText) view.findViewById(R.id.last_name_edittext);
+                    String lastName = lastNameEditText.getText().toString();
+                    RadioGroup genderRadio = (RadioGroup) view.findViewById(R.id.gender_radio_group);
+                    int selectedId = genderRadio.getCheckedRadioButtonId();
+                    // find the radiobutton by returned id
+                    RadioButton radioButton = (RadioButton) recyclerView.findViewById(selectedId);
+                    String gender = (String) radioButton.getText();
+                    GuestModel guestModel = new GuestModel(firstName,lastName,gender);
+                    guestModels.add(guestModel);
+                }
+                guestsRequest.guests_list=guestModels;
+                guestsRequest.checkin=checkInDate;
+                guestsRequest.checkout=checkOutDate;
+                guestsRequest.hotel_name=hotelName;
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("guestsRequest",guestsRequest);
+
+
+
+
+//                guestViewModel.sendConfirmRequest(guestsRequest);
+
+//                String confirmNumber = guestViewModel.getConfirmResponseLiveData().getValue().getConfirmation_number();
+//                System.out.println(confirmNumber);
+
+                // set Fragment class Arguments
+                ConfirmReservationFragment confirmReservationFragment = new ConfirmReservationFragment();
+                confirmReservationFragment.setArguments(bundle);
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.main_layout, confirmReservationFragment);
+                fragmentTransaction.remove(HotelGuestListDetailsFragment.this);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+            }
+        });
 
 
     }

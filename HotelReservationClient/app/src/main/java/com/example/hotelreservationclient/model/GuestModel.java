@@ -8,6 +8,11 @@ public class GuestModel {
     public GuestModel(int guestNumber) {
         this.guestNumber = "Guest #" + guestNumber;
     }
+    public GuestModel(String firstName,String lastName, String gender){
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setGender(gender);
+    }
 
     @SerializedName("firstName")
     @Expose

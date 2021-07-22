@@ -54,6 +54,9 @@ public class GuestListConfirmAdapter extends RecyclerView.Adapter<GuestListConfi
 //            guestModelList.add(new GuestModel());
 //        }
 //    }
+    public List<GuestModel> getGuestModelList(){
+        return guestModelList;
+    }
 
     class GuestListConfirmHolder extends RecyclerView.ViewHolder {
         private GuestListLayoutBinding guestListLayoutBinding;

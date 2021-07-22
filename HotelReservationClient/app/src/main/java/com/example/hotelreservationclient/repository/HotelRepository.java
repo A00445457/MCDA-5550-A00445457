@@ -3,6 +3,8 @@ package com.example.hotelreservationclient.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.hotelreservationclient.model.ConfirmResponse;
+import com.example.hotelreservationclient.model.GuestsRequest;
 import com.example.hotelreservationclient.model.HotelsResponse;
 import com.example.hotelreservationclient.network.HotelSearchService;
 
@@ -20,7 +22,7 @@ public class HotelRepository {
 
     private HotelSearchService hotelSearchService;
     private MutableLiveData<HotelsResponse> hotelsResponseLiveData;
-
+    private MutableLiveData<ConfirmResponse> confirmResponseMutableLiveData;
 
 
     /**
@@ -28,6 +30,7 @@ public class HotelRepository {
      */
     public HotelRepository() {
         hotelsResponseLiveData = new MutableLiveData<>();
+        confirmResponseMutableLiveData = new MutableLiveData<>();
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
@@ -67,10 +70,38 @@ public class HotelRepository {
 
     /**
      * provide hotel list get from api
+     *
      * @return live data which could binding to view
      */
     public LiveData<HotelsResponse> getHotelsResponseLiveData() {
         return hotelsResponseLiveData;
+    }
+
+    public LiveData<ConfirmResponse> getConfirmResponseLiveData() {
+        return confirmResponseMutableLiveData;
+    }
+
+    public void requestReservation(GuestsRequest guestsRequest) {
+
+
+        hotelSearchService.requestReservation(guestsRequest)
+                .enqueue(new Callback<ConfirmResponse>() {
+                    @Override
+                    public void onResponse(Call<ConfirmResponse> call, Response<ConfirmResponse> response) {
+                        if (response.isSuccessful()) {
+                            confirmResponseMutableLiveData.postValue(response.body());
+                        } else {
+                            String error = response.errorBody().toString();
+                            System.out.println(error);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ConfirmResponse> call, Throwable t) {
+                        confirmResponseMutableLiveData.postValue(null);
+                    }
+                });
+
     }
 }
 
