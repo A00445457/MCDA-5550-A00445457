@@ -121,8 +121,8 @@ public class HotelGuestListDetailsFragment extends Fragment {
                 confirmReservationFragment.setArguments(bundle);
 
                 FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_layout, confirmReservationFragment);
                 fragmentTransaction.remove(HotelGuestListDetailsFragment.this);
+                fragmentTransaction.replace(R.id.main_layout, confirmReservationFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
 
