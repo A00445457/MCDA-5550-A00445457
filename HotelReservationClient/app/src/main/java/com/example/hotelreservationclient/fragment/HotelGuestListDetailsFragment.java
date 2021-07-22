@@ -91,8 +91,6 @@ public class HotelGuestListDetailsFragment extends Fragment {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                GuestListLayoutBinding guestListLayoutBinding = DataBindingUtil.findBinding(v);
-//                guestListLayoutBinding.getGuest();
                 GuestsRequest guestsRequest = new GuestsRequest();
                 List<GuestModel> guestModels = new ArrayList<>();
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
@@ -118,23 +116,16 @@ public class HotelGuestListDetailsFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("guestsRequest",guestsRequest);
 
-
-
-
-//                guestViewModel.sendConfirmRequest(guestsRequest);
-
-//                String confirmNumber = guestViewModel.getConfirmResponseLiveData().getValue().getConfirmation_number();
-//                System.out.println(confirmNumber);
-
                 // set Fragment class Arguments
                 ConfirmReservationFragment confirmReservationFragment = new ConfirmReservationFragment();
                 confirmReservationFragment.setArguments(bundle);
 
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_layout, confirmReservationFragment);
                 fragmentTransaction.remove(HotelGuestListDetailsFragment.this);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
 
             }
         });
