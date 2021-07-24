@@ -175,6 +175,7 @@ public class HotelSearchFragment extends Fragment {
      */
     private boolean checkGuestInfo() {
         boolean result = true;
+        numberOfGuests = guestCountEditText.getText().toString();
         //check if numberOfGUests is empty
         if (numberOfGuests.isEmpty()) {
             Context context = view.getContext();
@@ -182,7 +183,7 @@ public class HotelSearchFragment extends Fragment {
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            result = false;
+            return false;
         }
         //check if numberOfGuests is valid
         if (!android.text.TextUtils.isDigitsOnly(numberOfGuests)) {
@@ -191,14 +192,14 @@ public class HotelSearchFragment extends Fragment {
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            result = false;
+            return false;
         } else if (Integer.parseInt(numberOfGuests) < 1) {
             Context context = view.getContext();
             CharSequence text = "Please input valid number of check in guest.";
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-            result = false;
+            return false;
         }
         return result;
     }

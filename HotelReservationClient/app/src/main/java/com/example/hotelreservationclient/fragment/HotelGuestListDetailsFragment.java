@@ -1,6 +1,6 @@
 package com.example.hotelreservationclient.fragment;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,25 +10,21 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hotelreservationclient.R;
 import com.example.hotelreservationclient.adapter.GuestListConfirmAdapter;
-import com.example.hotelreservationclient.model.ConfirmResponse;
 import com.example.hotelreservationclient.model.GuestModel;
 import com.example.hotelreservationclient.model.GuestsRequest;
-import com.example.hotelreservationclient.model.HotelsResponse;
 import com.example.hotelreservationclient.viewmodel.GuestViewModel;
-import com.example.hotelreservationclient.viewmodel.HotelViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +44,7 @@ public class HotelGuestListDetailsFragment extends Fragment {
         numberOfGuests = numberOfGuests.isEmpty() ? "1" : numberOfGuests;
         int number = Integer.parseInt(numberOfGuests);
         guestListConfirmAdapter = new GuestListConfirmAdapter(number);
-        guestViewModel= ViewModelProviders.of(this).get(GuestViewModel.class);
+        guestViewModel = ViewModelProviders.of(this).get(GuestViewModel.class);
         guestViewModel.init();
 
     }
@@ -100,21 +96,31 @@ public class HotelGuestListDetailsFragment extends Fragment {
                     String firstName = firstNameEditText.getText().toString();
                     EditText lastNameEditText = (EditText) view.findViewById(R.id.last_name_edittext);
                     String lastName = lastNameEditText.getText().toString();
+                    if (firstNameEditText.getText().toString().isEmpty() || lastNameEditText.getText().toString().isEmpty()) {
+                        Context context = view.getContext();
+                        CharSequence text = "Please input guest name on #" + (i + 1);
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        return;
+
+                    }
                     RadioGroup genderRadio = (RadioGroup) view.findViewById(R.id.gender_radio_group);
                     int selectedId = genderRadio.getCheckedRadioButtonId();
                     // find the radiobutton by returned id
                     RadioButton radioButton = (RadioButton) recyclerView.findViewById(selectedId);
                     String gender = (String) radioButton.getText();
-                    GuestModel guestModel = new GuestModel(firstName,lastName,gender);
+                    GuestModel guestModel = new GuestModel(firstName, lastName, gender);
                     guestModels.add(guestModel);
                 }
-                guestsRequest.guests_list=guestModels;
-                guestsRequest.checkin=checkInDate;
-                guestsRequest.checkout=checkOutDate;
-                guestsRequest.hotel_name=hotelName;
+                guestsRequest.guests_list = guestModels;
+                guestsRequest.checkin = checkInDate;
+                guestsRequest.checkout = checkOutDate;
+                guestsRequest.hotel_name = hotelName;
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("guestsRequest",guestsRequest);
+                bundle.putSerializable("guestsRequest", guestsRequest);
 
                 // set Fragment class Arguments
                 ConfirmReservationFragment confirmReservationFragment = new ConfirmReservationFragment();
