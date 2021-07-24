@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,9 +91,14 @@ public class HotelSearchFragment extends Fragment {
                 checkOutDate = getDateFromCalendar(checkOutDatePickerView);
                 numberOfGuests = guestCountEditText.getText().toString();
                 guestName = nameEditText.getText().toString();
+                if (!checkGuestInfo()) {
+                    return;
+                }
+
                 searchTextConfirmationTextView.setText("The checkin is " + checkInDate +
                         " and checkout is " + checkOutDate +
                         ". Number of guests is " + numberOfGuests);
+
 
                 // Saving into shared preferences
                 sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
@@ -111,6 +117,11 @@ public class HotelSearchFragment extends Fragment {
                 checkInDate = getDateFromCalendar(checkInDatePickerView);
                 checkOutDate = getDateFromCalendar(checkOutDatePickerView);
                 numberOfGuests = guestCountEditText.getText().toString();
+                guestName = nameEditText.getText().toString();
+                if (!checkGuestInfo()) {
+                    return;
+                }
+
 
                 Bundle bundle = new Bundle();
                 bundle.putString("check in date", checkInDate);
@@ -155,6 +166,41 @@ public class HotelSearchFragment extends Fragment {
             }
         });
 
+    }
+
+    /**
+     * check if numberof guests is valid
+     *
+     * @return
+     */
+    private boolean checkGuestInfo() {
+        boolean result = true;
+        //check if numberOfGUests is empty
+        if (numberOfGuests.isEmpty()) {
+            Context context = view.getContext();
+            CharSequence text = "Please input number of check in guest.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            result = false;
+        }
+        //check if numberOfGuests is valid
+        if (!android.text.TextUtils.isDigitsOnly(numberOfGuests)) {
+            Context context = view.getContext();
+            CharSequence text = "Please input valid number of check in guest.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            result = false;
+        } else if (Integer.parseInt(numberOfGuests) < 1) {
+            Context context = view.getContext();
+            CharSequence text = "Please input valid number of check in guest.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            result = false;
+        }
+        return result;
     }
 
 
