@@ -1,5 +1,7 @@
 package com.example.hotelreservationclient.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +25,21 @@ public class HotelSearchFragment extends Fragment {
 
     View view;
     TextView titleTextView, searchTextConfirmationTextView;
-    EditText guestCountEditText;
-    Button confirmSearchButton, searchButton;
+    EditText guestCountEditText, nameEditText;
+    Button confirmSearchButton, searchButton, retrieveButton, clearButton;
     DatePicker checkInDatePickerView, checkOutDatePickerView;
-    String checkInDate, checkOutDate, numberOfGuests;
+    String checkInDate, checkOutDate, numberOfGuests, guestName;
+
+    // Declaration of shared preferences keys
+    SharedPreferences sharedPreferences;
+    public static final String myPreference = "myPref";
+    public static final String name = "nameKey";
+    public static final String guestsCount = "guestsCount";
 
 
     /**
      * inflate screen when run this app
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -38,16 +47,17 @@ public class HotelSearchFragment extends Fragment {
      */
     @Nullable
     @Override
-    public View onCreateView(@NonNull  LayoutInflater inflater,
-                             @Nullable  ViewGroup container,
-                             @Nullable  Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.hotel_search_layout,container,false);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.hotel_search_layout, container, false);
         return view;
     }
 
 
     /**
      * after view created, take all inputs
+     *
      * @param view
      * @param savedInstanceState
      */
@@ -64,6 +74,10 @@ public class HotelSearchFragment extends Fragment {
         checkOutDatePickerView = view.findViewById(R.id.checkout_date_picker_view);
         searchButton = view.findViewById(R.id.search_button);
 
+        retrieveButton = view.findViewById(R.id.retrieve_button);
+        clearButton = view.findViewById(R.id.clear_button);
+        nameEditText = view.findViewById(R.id.name_edit_text);
+
 
         //set text
         titleTextView.setText(R.string.welcome_text);
@@ -75,9 +89,17 @@ public class HotelSearchFragment extends Fragment {
                 checkInDate = getDateFromCalendar(checkInDatePickerView);
                 checkOutDate = getDateFromCalendar(checkOutDatePickerView);
                 numberOfGuests = guestCountEditText.getText().toString();
+                guestName = nameEditText.getText().toString();
                 searchTextConfirmationTextView.setText("The checkin is " + checkInDate +
-                        " and checkout is " +  checkOutDate +
-                        ". Number of guests is "+numberOfGuests);
+                        " and checkout is " + checkOutDate +
+                        ". Number of guests is " + numberOfGuests);
+
+                // Saving into shared preferences
+                sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(name, guestName);
+                editor.putString(guestsCount, numberOfGuests);
+                editor.commit();
 
             }
         });
@@ -99,11 +121,37 @@ public class HotelSearchFragment extends Fragment {
                 hotelListFragment.setArguments(bundle);
 
                 FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_layout,hotelListFragment);
+                fragmentTransaction.replace(R.id.main_layout, hotelListFragment);
                 fragmentTransaction.remove(HotelSearchFragment.this);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
 
+            }
+        });
+
+        // Retrieve Button Click Listener
+
+        retrieveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+
+                if (sharedPreferences.contains(name)) {
+                    nameEditText.setText(sharedPreferences.getString(name, ""));
+                }
+                if (sharedPreferences.contains(guestsCount)) {
+                    guestCountEditText.setText(sharedPreferences.getString(guestsCount, ""));
+
+                }
+            }
+        });
+
+        //Clear Button Click Listener
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestCountEditText.setText("");
+                nameEditText.setText("");
             }
         });
 
@@ -112,15 +160,16 @@ public class HotelSearchFragment extends Fragment {
 
     /**
      * get date from datePickerView
+     *
      * @return
      */
-    private String getDateFromCalendar(DatePicker datePickerView){
+    private String getDateFromCalendar(DatePicker datePickerView) {
         int day = datePickerView.getDayOfMonth();
         int month = datePickerView.getMonth();
         int year = datePickerView.getYear();
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year,month,day);
+        calendar.set(year, month, day);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = simpleDateFormat.format(calendar.getTime());

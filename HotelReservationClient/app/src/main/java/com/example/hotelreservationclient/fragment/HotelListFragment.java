@@ -1,11 +1,13 @@
 package com.example.hotelreservationclient.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,6 +109,16 @@ public class HotelListFragment extends Fragment implements HotelItemClickListene
         HotelModel hotelModel = hotelViewModel.getHotelsResponseLiveData().getValue().getHotels_list().get(position);
         String hotelName = hotelModel.getHotel_name();
         String price = hotelModel.getPrice();
+        boolean availability = hotelModel.getAvailability();
+        if(!availability){
+            Context context = view.getContext();
+            CharSequence text = hotelName+" is unavailable now, please choose other hotels.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
         String checkInDate = getArguments().getString("check in date");
         String checkOutDate = getArguments().getString("check out date");
         String numberOfGuests = getArguments().getString("number of guests");
